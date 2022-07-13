@@ -1,5 +1,5 @@
 {
-  "name": "matchory/laravel-mailgun-templated-messages",
+  "name": "matchory/laravel-mailgun-templates-channel",
   "description": "A Laravel notification channel for Mailgun's templated messages.",
   "type": "library",
   "require": {
