@@ -19,7 +19,6 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use Exception;
-use JsonException;
 use Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage;
 use Matchory\MailgunTemplatedMessages\Tests\TestCase;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -84,7 +83,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArray(): void
@@ -99,7 +97,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingBcc(): void
@@ -116,7 +113,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingCc(): void
@@ -133,7 +129,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingEncodedHeaders(): void
@@ -152,7 +147,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingEncodedParam(): void
@@ -169,7 +163,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingEncodedParams(): void
@@ -188,7 +181,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingOptions(): void
@@ -205,7 +197,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingRecipient(): void
@@ -222,7 +213,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingSender(): void
@@ -239,7 +229,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingSubject(): void
@@ -256,7 +245,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
     public function testConvertsMessageToArrayIncludingTemplateVersion(): void
@@ -549,7 +537,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @throws \PHPUnit\Framework\Exception
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasHeader
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
@@ -566,7 +553,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @throws \PHPUnit\Framework\Exception
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasOption
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
@@ -584,7 +570,6 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @throws \PHPUnit\Framework\Exception
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasParam
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
