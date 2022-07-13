@@ -105,12 +105,12 @@ class MailgunTemplatedMessage implements Arrayable
      *
      * @example        resolveTarget('john@example.com'); // 'john@example.com'
      * @example        resolveTarget(
-     *                     'john@example.com <John Smith>'
-     *                 ); // 'john@example.com <John Smith>'
+     *                     'John Smith <john@example.com>'
+     *                 ); // 'John Smith <john@example.com>'
      * @example        resolveTarget([
      *                     'address' => 'john@example.com',
      *                     'name' => 'John Smith'
-     *                 ]); // 'john@example.com <John Smith>'
+     *                 ]); // 'John Smith <john@example.com>'
      * @example        resolveTarget([
      *                     'address' => 'john@example.com'
      *                 ]); // 'john@example.com'
@@ -119,7 +119,7 @@ class MailgunTemplatedMessage implements Arrayable
      *                 ]); // 'john@example.com'
      * @example        resolveTarget([
      *                     'john@example.com' => 'John Smith'
-     *                 ]); // 'john@example.com <John Smith>'
+     *                 ]); // 'John Smith <john@example.com>'
      * @example        resolveTarget(''); // null
      * @example        resolveTarget(null); // null
      * @psalm-suppress MixedReturnStatement
@@ -135,14 +135,14 @@ class MailgunTemplatedMessage implements Arrayable
          * @psalm-suppress PossiblyInvalidArgument
          */
         return match (true) {
-            // 'john@example.com', 'john@example.com <John Smith>'
+            // 'john@example.com', 'John Smith <john@example.com>'
             $target && is_string($target) => $target,
 
             // [ 'address' => 'john@example.com', 'name' => 'John Smith' ]
             isset(
                 $target['address'],
                 $target['name']
-            ) => "{$target['address']} <{$target['name']}>",
+            ) => "{$target['name']} <{$target['address']}>",
 
             // [ 'address' => 'john@example.com' ]
             isset($target['address']) => $target['address'],
@@ -153,7 +153,7 @@ class MailgunTemplatedMessage implements Arrayable
             // [ 'john@example.com' => 'John Smith' ]
             is_string($key = array_key_first(
                 $target
-            )) => "$key <$target[$key]>",
+            )) => "{$target[$key]} <{$key}>",
 
             // [], '', 42, false
             default => null
