@@ -58,8 +58,7 @@ class MailgunTemplatesChannelServiceProvider extends ServiceProvider
         Notification::resolved(static fn(ChannelManager $service) => $service->extend(
             self::NOTIFICATION_DRIVER,
             function (Container $app): MailgunTemplatesChannel {
-                $channel = $app->get(MailgunTemplatesChannel::class);
-
+                $channel = $app->make(MailgunTemplatesChannel::class);
                 assert($channel instanceof MailgunTemplatesChannel);
 
                 return $channel;
