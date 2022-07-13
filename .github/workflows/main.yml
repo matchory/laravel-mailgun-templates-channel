@@ -22,3 +22,8 @@ jobs:
         run: composer analyze:ci
       - name: Execute tests
         run: composer test:ci
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.0.0-beta.2
+        if: always()
+        with:
+          files: "test-reports/**/*.xml"
