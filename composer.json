@@ -1,0 +1,63 @@
+{
+  "name": "matchory/laravel-mailgun-templated-messages",
+  "description": "A Laravel notification channel for Mailgun's templated messages.",
+  "type": "library",
+  "require": {
+    "php": ">=8.1",
+    "mailgun/mailgun-php": "^3.5",
+    "illuminate/support": "^8.34|^9.19"
+  },
+  "require-dev": {
+    "dg/bypass-finals": "^1.3",
+    "illuminate/contracts": "^8.34|^9.19",
+    "jetbrains/phpstorm-attributes": "^1.0",
+    "orchestra/testbench": "^7.6",
+    "phpunit/phpunit": "^9.5",
+    "vimeo/psalm": "^4.24"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Matchory\\MailgunTemplatedMessages\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Matchory\\MailgunTemplatedMessages\\Tests\\": "tests/"
+    }
+  },
+  "keywords": [
+    "laravel",
+    "mailgun",
+    "notifications",
+    "channel",
+    "templated-messages"
+  ],
+  "authors": [
+    {
+      "name": "Moritz Friedrich",
+      "email": "moritz@matchory.com"
+    }
+  ],
+  "prefer-stable": true,
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Matchory\\MailgunTemplatedMessages\\MailgunTemplatesChannelServiceProvider"
+      ],
+      "aliases": {
+        "ResponseCache": "Matchory\\ResponseCache\\Facades\\ResponseCache"
+      }
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "analyze": "vendor/bin/psalm",
+    "test": "vendor/bin/phpunit"
+  }
+}
