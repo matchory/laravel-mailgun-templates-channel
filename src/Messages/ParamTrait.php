@@ -147,7 +147,7 @@ trait ParamTrait
     /**
      * Retrieves the encoded parameters.
      *
-     * @return array<string, string> Encoded parameters.
+     * @return array<string, scalar|null> Encoded parameters.
      */
     protected function getEncodedParams(): array
     {
