@@ -91,11 +91,14 @@ class MailgunTemplatesChannel
             $sender = config('mail.from');
 
             if ($sender) {
-                assert(is_string($sender), sprintf(
-                    'Expected config value mail.from to be ' .
-                    'string, got %s instead',
-                    get_debug_type($sender)
-                ));
+                assert(
+                    is_string($sender) || is_array($sender),
+                    sprintf(
+                        'Expected config value mail.from to be ' .
+                        'string or array, got %s instead',
+                        get_debug_type($sender)
+                    )
+                );
                 $message->setSender($sender);
             }
         }
@@ -104,11 +107,14 @@ class MailgunTemplatesChannel
             $replyTo = config('mail.reply_to');
 
             if ($replyTo) {
-                assert(is_string($replyTo), sprintf(
-                    'Expected config value mail.reply_to to be ' .
-                    'string, got %s instead',
-                    get_debug_type($replyTo)
-                ));
+                assert(
+                    is_string($replyTo) || is_array($replyTo),
+                    sprintf(
+                        'Expected config value mail.reply_to to be ' .
+                        'string or array, got %s instead',
+                        get_debug_type($replyTo)
+                    )
+                );
                 $message->setReplyTo($replyTo);
             }
         }
@@ -117,11 +123,13 @@ class MailgunTemplatesChannel
             $returnPath = config('mail.return_path');
 
             if ($returnPath) {
-                assert(is_string($returnPath), sprintf(
-                    'Expected config value mail.return_path to be ' .
-                    'string, got %s instead',
-                    get_debug_type($returnPath)
-                ));
+                assert(
+                    is_string($returnPath) || is_array($returnPath),
+                    sprintf(
+                        'Expected config value mail.return_path to be ' .
+                        'string or array, got %s instead',
+                        get_debug_type($returnPath)
+                    ));
                 $message->setReturnPath($returnPath);
             }
         }
