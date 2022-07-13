@@ -3,6 +3,9 @@
 /**
  * This file is part of laravel-mailgun-templated-messages, a Matchory application.
  *
+ * Unauthorized copying of this file, via any medium, is strictly prohibited.
+ * Its contents are strictly confidential and proprietary.
+ *
  * @copyright 2020–2022 Matchory GmbH · All rights reserved
  * @author    Moritz Friedrich <moritz@matchory.com>
  */
@@ -16,65 +19,62 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 
-use function json_encode;
-
-use const JSON_THROW_ON_ERROR;
+use function substr;
 
 /**
  * @template T of MailgunTemplatedMessage
  * @bundle   Matchory\MailgunTemplatedMessages
  */
-trait MailgunFeatureTrait
+trait OptionTrait
 {
-    private string $templateName;
-
-    private string|null $templateVersion = null;
+    /**
+     * @var array<string, scalar|null>
+     */
+    private array $options = [];
 
     /**
-     * Retrieves the template name
+     * Retrieves the message options.
      *
-     * @return string Template name.
+     * @return array<string, scalar|null> Message options as key-value pairs.
      */
     #[Pure]
-    public function getTemplateName(): string
+    public function getOptions(): array
     {
-        return $this->templateName;
+        return $this->options;
     }
 
     /**
-     * Sets the template name. This is only intended to be used within the
-     * message itself, as the template name should not be changed after
-     * construction.
+     * Sets multiple options.
      *
-     * @param string $templateName Name of the template.
+     * @param array<string, scalar|null> $options Message options as key-value
+     *                                            pairs.
      */
-    final protected function setTemplateName(string $templateName): void
+    public function setOptions(array $options): void
     {
-        $this->templateName = $templateName;
+        foreach ($options as $name => $value) {
+            $this->addOption($name, $value);
+        }
     }
 
     /**
-     * Retrieves the template version.
+     * Adds an option to the message.
      *
-     * @return string|null Template version.
+     * @param string      $name  Name of the option.
+     * @param scalar|null $value Value of the option.
+     *
+     * @psalm-suppress MixedPropertyTypeCoercion
      */
-    public function getTemplateVersion(): string|null
+    public function addOption(string $name, mixed $value): void
     {
-        return $this->templateVersion;
-    }
+        if (str_starts_with('o:', $name)) {
+            $name = substr($name, 2);
+        }
 
-    /**
-     * Sets the template version.
-     *
-     * @param string $version Template version to use.
-     */
-    public function setTemplateVersion(string $version): void
-    {
-        $this->templateVersion = $version;
+        Arr::set($this->options, $name, $value);
     }
 
     /**
@@ -114,15 +114,71 @@ trait MailgunFeatureTrait
     }
 
     /**
-     * Sets the template version.
+     * Checks whether the message has a given option configured.
      *
-     * @param string $version Template version to use.
+     * @param string $name Name of the option.
      *
-     * @return T Instance for chaining.
+     * @return bool Whether the option is currently set.
      */
-    public function version(string $version): static
+    public function hasOption(string $name): bool
     {
-        $this->setTemplateVersion($version);
+        return Arr::has($this->options, $name);
+    }
+
+    /**
+     * Sets a single option.
+     *
+     * @param string      $name  Name of the option.
+     * @param scalar|null $value Value of the option.
+     *
+     * @return T
+     * @see self::addOption()
+     */
+    public function option(string $name, mixed $value): static
+    {
+        $this->addOption($name, $value);
+
+        return $this;
+    }
+
+    /**
+     * Sets multiple options.
+     *
+     * @param array<string, scalar|null> $options Options as key-value pairs.
+     *
+     * @return T
+     * @see self::setOptions()
+     */
+    public function options(array $options): static
+    {
+        $this->setOptions($options);
+
+        return $this;
+    }
+
+    /**
+     * Removes an option from the configured options.
+     *
+     * @param string $name Name of the option.
+     *
+     * @psalm-suppress MixedPropertyTypeCoercion
+     */
+    public function removeOption(string $name): void
+    {
+        Arr::forget($this->options, $name);
+    }
+
+    /**
+     * Removes an option.
+     *
+     * @param string $name Name of the option to remove.
+     *
+     * @return T
+     * @see self::removeOption()
+     */
+    public function withoutOption(string $name): static
+    {
+        $this->removeOption($name);
 
         return $this;
     }
@@ -131,7 +187,6 @@ trait MailgunFeatureTrait
      * Retrieves the encoded options.
      *
      * @return array<string, scalar|null> Encoded options.
-     * @throws JsonException If value encoding fails.
      */
     private function getEncodedOptions(): array
     {
@@ -140,25 +195,6 @@ trait MailgunFeatureTrait
             ->filter()
             ->mapWithKeys(fn(mixed $value, string $name): array => [
                 "o:{$name}" => $value,
-            ])
-            ->all();
-    }
-
-    /**
-     * Retrieves the encoded parameters.
-     *
-     * @return array<string, string> Encoded parameters.
-     * @throws JsonException If value encoding fails.
-     */
-    private function getEncodedParameters(): array
-    {
-        return Collection
-            ::make($this->getParams())
-            ->mapWithKeys(fn(mixed $value, string $name): array => [
-                "v:{$name}" => json_encode(
-                    $value,
-                    JSON_THROW_ON_ERROR
-                ),
             ])
             ->all();
     }

@@ -526,16 +526,16 @@ class MailgunTemplatedMessageTest extends TestCase
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::subject
-     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::setTemplateVersion
-     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::getTemplateVersion
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::setVersion
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::getVersion
      */
     public function testVersionSetting(): void
     {
         $message = new MailgunTemplatedMessage('foo');
-        self::assertNull($message->getTemplateVersion());
+        self::assertNull($message->getVersion());
         $message->version('42');
-        self::assertSame('42', $message->getTemplateVersion());
-        $message->setTemplateVersion('43');
-        self::assertSame('43', $message->getTemplateVersion());
+        self::assertSame('42', $message->getVersion());
+        $message->setVersion('43');
+        self::assertSame('43', $message->getVersion());
     }
 }

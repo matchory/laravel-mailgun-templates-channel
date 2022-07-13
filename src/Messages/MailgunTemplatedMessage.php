@@ -23,16 +23,19 @@ use function array_merge;
  * Represents a message template on the Mailgun API, making it easy to send an
  * existing message template with a given set of parameters.
  *
- * @use FluentTrait<MailgunTemplatedMessage>
- * @use MailgunFeatureTrait<MailgunTemplatedMessage>
- * @use MessageBuildingTrait<MailgunTemplatedMessage>
+ * @use HeaderTrait<MailgunTemplatedMessage>
+ * @use OptionTrait<MailgunTemplatedMessage>
+ * @use ParamTrait<MailgunTemplatedMessage>
+ * @use PropertyTrait<MailgunTemplatedMessage>
+ * @use TemplateTrait<MailgunTemplatedMessage>
  * @bundle Matchory\MailgunTemplatedMessages
  */
 class MailgunTemplatedMessage implements Arrayable
 {
-    use FluentTrait;
-    use MailgunFeatureTrait;
-    use MessageBuildingTrait;
+    use OptionTrait;
+    use ParamTrait;
+    use PropertyTrait;
+    use TemplateTrait;
 
     private const DEFAULT_DELIVERY_TIMEZONE = 'UTC';
 
@@ -76,13 +79,13 @@ class MailgunTemplatedMessage implements Arrayable
     {
         return array_filter(array_merge(
             $this->getEncodedOptions(),
-            $this->getEncodedParameters(),
+            $this->getEncodedParams(),
             [
                 'bcc' => $this->getBlindCarbonCopy(),
                 'cc' => $this->getCarbonCopy(),
                 'from' => $this->getSender(),
                 'subject' => $this->getSubject(),
-                't:version' => $this->getTemplateVersion(),
+                't:version' => $this->getVersion(),
                 'template' => $this->getTemplateName(),
                 'to' => $this->getRecipient(),
             ]
