@@ -3,9 +3,6 @@
 /**
  * This file is part of laravel-mailgun-templated-messages, a Matchory application.
  *
- * Unauthorized copying of this file, via any medium, is strictly prohibited.
- * Its contents are strictly confidential and proprietary.
- *
  * @copyright 2020–2022 Matchory GmbH · All rights reserved
  * @author    Moritz Friedrich <moritz@matchory.com>
  */
