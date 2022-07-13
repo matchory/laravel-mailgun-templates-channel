@@ -13,14 +13,13 @@ namespace Matchory\MailgunTemplatedMessages;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Notifications\ChannelManager;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\ServiceProvider;
 use LogicException;
 use Mailgun\Mailgun;
 use Matchory\MailgunTemplatedMessages\Channels\MailgunTemplatesChannel;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 use function assert;
 use function is_array;
@@ -38,9 +37,8 @@ class MailgunTemplatesChannelServiceProvider extends ServiceProvider
     /**
      * Register the application services.
      *
-     * @throws ContainerExceptionInterface
+     * @throws BindingResolutionException
      * @throws LogicException
-     * @throws NotFoundExceptionInterface
      */
     public function register(): void
     {
@@ -50,8 +48,7 @@ class MailgunTemplatesChannelServiceProvider extends ServiceProvider
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws BindingResolutionException
      */
     private function extendNotificationChannels(): void
     {

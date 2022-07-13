@@ -63,6 +63,7 @@ class MailgunTemplatesChannel
             )
         );
 
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
         $message = $notification->toMailgun($notifiable);
         assert(
             $message instanceof MailgunTemplatedMessage,
