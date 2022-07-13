@@ -57,7 +57,9 @@
     "sort-packages": true
   },
   "scripts": {
+    "analyze:ci": "vendor/bin/psalm --no-cache --show-info=true --long-progress --monochrome --stats --report=./test-reports/psalm.junit.xml",
     "analyze": "vendor/bin/psalm",
+    "test:ci": "vendor/bin/phpunit --no-interaction --log-junit=./test-reports/phpunit.junit.xml",
     "test": "vendor/bin/phpunit"
   }
 }
