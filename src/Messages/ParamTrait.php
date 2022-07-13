@@ -70,7 +70,7 @@ trait ParamTrait
      */
     public function addParam(string $name, mixed $value): void
     {
-        if (str_starts_with('v:', $name)) {
+        if (str_starts_with($name, 'v:')) {
             $name = substr($name, 2);
         }
 

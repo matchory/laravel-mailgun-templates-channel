@@ -16,9 +16,7 @@ namespace Matchory\MailgunTemplatedMessages\Messages;
 
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 
-use function array_filter;
 use function is_array;
 use function str_starts_with;
 use function strtolower;
@@ -170,7 +168,7 @@ trait HeaderTrait
     {
         return Collection
             ::make($this->getHeaders())
-            ->filter(fn(array $values) => array_filter($values))
+            ->filter(fn(array $values) => (bool)$values)
             ->mapWithKeys(fn(array $values, string $name): array => [
                 "h:{$name}" => $values,
             ])
@@ -179,7 +177,7 @@ trait HeaderTrait
 
     private function normalizeHeaderName(string $name): string
     {
-        if (str_starts_with('h:', $name)) {
+        if (str_starts_with($name, 'h:')) {
             $name = substr($name, 2);
         }
 

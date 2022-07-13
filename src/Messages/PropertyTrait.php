@@ -287,46 +287,57 @@ trait PropertyTrait
     /**
      * Resolves a mail target to an addressable format.
      *
-     * @param string|array|null $target Mail target in any known format.
+     * @param string|array<string|int, string>|null $target Mail target in any
+     *                                                      known format.
      *
      * @return string|null Address and name, if given. Null if none of both.
      *
-     * @example resolveTarget('foo@bar.com'); // 'foo@bar.com'
-     * @example resolveTarget('foo@bar.com <Foo Bar>'); // 'foo@bar.com <Foo Bar>'
+     * @example resolveTarget('john@example.com'); // 'john@example.com'
+     * @example resolveTarget(
+     *              'john@example.com <John Smith>'
+     *          ); // 'john@example.com <John Smith>'
      * @example resolveTarget([
-     *              'address' => 'foo@bar.com',
-     *              'name' => 'Foo Bar'
-     *          ]); // 'foo@bar.com <Foo Bar>'
-     * @example resolveTarget([ 'address' => 'foo@bar.com' ]); // 'foo@bar.com'
-     * @example resolveTarget([ 'foo@bar.com' ]); // 'foo@bar.com'
+     *              'address' => 'john@example.com',
+     *              'name' => 'John Smith'
+     *          ]); // 'john@example.com <John Smith>'
      * @example resolveTarget([
-     *              'foo@bar.com' => 'Foo Bar'
-     *          ]); // 'foo@bar.com <Foo Bar>'
+     *              'address' => 'john@example.com'
+     *          ]); // 'john@example.com'
+     * @example resolveTarget([ 'john@example.com' ]); // 'john@example.com'
+     * @example resolveTarget([
+     *              'john@example.com' => 'John Smith'
+     *          ]); // 'john@example.com <John Smith>'
      * @example resolveTarget(''); // null
      * @example resolveTarget(null); // null
+     * @psalm-suppress
      */
     private function resolveTarget(string|array|null $target): string|null
     {
+        /**
+         * Psalm doesn't handle match arms correctly currently
+         *
+         * @psalm-suppress PossiblyInvalidArrayOffset
+         * @psalm-suppress PossiblyNullArrayAccess
+         * @psalm-suppress PossiblyInvalidArgument
+         */
         return match (true) {
-            // 'foo@bar.com', 'foo@bar.com <Foo Bar>'
+            // 'john@example.com', 'john@example.com <John Smith>'
             $target && is_string($target) => $target,
 
-            // [ 'address' => 'foo@bar.com', 'name' => 'Foo Bar' ]
+            // [ 'address' => 'john@example.com', 'name' => 'John Smith' ]
             isset(
                 $target['address'],
                 $target['name']
             ) => "{$target['address']} <{$target['name']}>",
 
-            // [ 'address' => 'foo@bar.com' ]
+            // [ 'address' => 'john@example.com' ]
             isset($target['address']) => $target['address'],
 
-            // [ 'foo@bar.com' ]
-            isset($target[0]) && $target[0] => (string)$target[0],
+            // [ 'john@example.com' ]
+            isset($target[0]) && $target[0] => $target[0],
 
-            // [ 'foo@bar.com' => 'Foo Bar' ]
-            is_string($key = array_key_first(
-                $target
-            )) => "$key <$target[$key]>",
+            // [ 'john@example.com' => 'John Smith' ]
+            is_string($key = array_key_first($target)) => "$key <$target[$key]>",
 
             // [], '', 42, false
             default => null

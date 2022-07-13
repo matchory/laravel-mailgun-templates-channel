@@ -70,7 +70,7 @@ trait OptionTrait
      */
     public function addOption(string $name, mixed $value): void
     {
-        if (str_starts_with('o:', $name)) {
+        if (str_starts_with($name, 'o:')) {
             $name = substr($name, 2);
         }
 
