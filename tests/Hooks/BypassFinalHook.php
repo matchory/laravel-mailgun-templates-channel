@@ -20,7 +20,7 @@ use PHPUnit\Runner\BeforeTestHook;
  * Hooks into the PhpUnit process to make final classes non-final. This is
  * required to properly test Mailgun responses.
  *
- * @bundle Matchory\MailgunTemplatedMessages\Tests\Hooks
+ * @bundle Matchory\MailgunTemplatedMessages
  */
 final class BypassFinalHook implements BeforeTestHook
 {
