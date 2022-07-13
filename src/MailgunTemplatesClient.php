@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Matchory\MailgunTemplatedMessages;
 
 use Illuminate\Contracts\Events\Dispatcher;
-use JsonException;
 use Mailgun\Mailgun;
 use Mailgun\Model\Message\SendResponse;
 use Matchory\MailgunTemplatedMessages\Events\MailgunTemplateMessageSent;
@@ -49,7 +48,6 @@ class MailgunTemplatesClient
      * @param MailgunTemplatedMessage $message Message instance to send.
      *
      * @return SendResponse Send response as received from the Mailgun client.
-     * @throws JsonException If parameter serialization fails.
      */
     public function send(MailgunTemplatedMessage $message): SendResponse
     {

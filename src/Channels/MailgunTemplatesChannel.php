@@ -14,7 +14,6 @@ namespace Matchory\MailgunTemplatedMessages\Channels;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
-use JsonException;
 use Mailgun\Model\Message\SendResponse;
 use Matchory\MailgunTemplatedMessages\MailgunTemplatesChannelServiceProvider as ServiceProvider;
 use Matchory\MailgunTemplatedMessages\MailgunTemplatesClient;
@@ -49,7 +48,6 @@ class MailgunTemplatesChannel
      * @param Notification     $notification
      *
      * @return SendResponse|null
-     * @throws JsonException
      */
     public function send(
         mixed $notifiable,

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Matchory\MailgunTemplatedMessages\Messages;
 
 use Illuminate\Contracts\Support\Arrayable;
-use JsonException;
 
 use function array_filter;
 use function array_key_first;
@@ -76,7 +75,6 @@ class MailgunTemplatedMessage implements Arrayable
      * Converts the message to an array.
      *
      * @inheritdoc
-     * @throws JsonException If parameter encoding fails
      */
     public function toArray(): array
     {

@@ -180,8 +180,8 @@ class MailgunTemplatedMessageTest extends TestCase
 
         self::assertEquals([
             'template' => 'foo',
-            'v:bar' => '42',
-            'v:baz' => '"42"',
+            'v:bar' => 42,
+            'v:baz' => '42',
         ], $message->toArray());
     }
 

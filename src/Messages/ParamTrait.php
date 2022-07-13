@@ -17,12 +17,8 @@ namespace Matchory\MailgunTemplatedMessages\Messages;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 
-use function json_encode;
 use function substr;
-
-use const JSON_THROW_ON_ERROR;
 
 /**
  * @template T of MailgunTemplatedMessage
@@ -152,17 +148,13 @@ trait ParamTrait
      * Retrieves the encoded parameters.
      *
      * @return array<string, string> Encoded parameters.
-     * @throws JsonException If value encoding fails.
      */
     protected function getEncodedParams(): array
     {
         return Collection
             ::make($this->getParams())
             ->mapWithKeys(fn(mixed $value, string $name): array => [
-                "v:{$name}" => json_encode(
-                    $value,
-                    JSON_THROW_ON_ERROR
-                ),
+                "v:{$name}" => $value,
             ])
             ->all();
     }
