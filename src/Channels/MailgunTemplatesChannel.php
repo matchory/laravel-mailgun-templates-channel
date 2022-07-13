@@ -63,6 +63,7 @@ class MailgunTemplatesChannel
 
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $message = $notification->toMailgun($notifiable);
+
         assert(
             $message instanceof MailgunTemplatedMessage,
             sprintf(
@@ -85,54 +86,83 @@ class MailgunTemplatesChannel
             $message->setRecipient($recipient);
         }
 
-        if ( ! $message->hasSender()) {
-            $sender = config('mail.from');
-
-            if ($sender) {
-                assert(
-                    is_string($sender) || is_array($sender),
-                    sprintf(
-                        'Expected config value mail.from to be ' .
-                        'string or array, got %s instead',
-                        get_debug_type($sender)
-                    )
-                );
-                $message->setSender($sender);
-            }
-        }
-
-        if ( ! $message->hasReplyTo()) {
-            $replyTo = config('mail.reply_to');
-
-            if ($replyTo) {
-                assert(
-                    is_string($replyTo) || is_array($replyTo),
-                    sprintf(
-                        'Expected config value mail.reply_to to be ' .
-                        'string or array, got %s instead',
-                        get_debug_type($replyTo)
-                    )
-                );
-                $message->setReplyTo($replyTo);
-            }
-        }
-
-        if ( ! $message->hasReturnPath()) {
-            $returnPath = config('mail.return_path');
-
-            if ($returnPath) {
-                assert(
-                    is_string($returnPath) || is_array($returnPath),
-                    sprintf(
-                        'Expected config value mail.return_path to be ' .
-                        'string or array, got %s instead',
-                        get_debug_type($returnPath)
-                    ));
-                $message->setReturnPath($returnPath);
-            }
-        }
+        $this->configureSender($message);
+        $this->configureReplyTo($message);
+        $this->configureReturnPath($message);
 
         return $this->client->send($message);
+    }
+
+    private function configureReplyTo(MailgunTemplatedMessage $message): void
+    {
+        if ($message->hasReplyTo()) {
+            return;
+        }
+
+        $replyTo = config('mail.reply_to');
+
+        if ( ! $replyTo) {
+            return;
+        }
+
+        assert(
+            is_string($replyTo) || is_array($replyTo),
+            sprintf(
+                'Expected config value mail.reply_to to be ' .
+                'string or array, got %s instead',
+                get_debug_type($replyTo)
+            )
+        );
+
+        $message->setReplyTo($replyTo);
+    }
+
+    private function configureReturnPath(MailgunTemplatedMessage $message): void
+    {
+        if ($message->hasReturnPath()) {
+            return;
+        }
+
+        $returnPath = config('mail.return_path');
+
+        if ( ! $returnPath) {
+            return;
+        }
+
+        assert(
+            is_string($returnPath) || is_array($returnPath),
+            sprintf(
+                'Expected config value mail.return_path to be ' .
+                'string or array, got %s instead',
+                get_debug_type($returnPath)
+            )
+        );
+
+        $message->setReturnPath($returnPath);
+    }
+
+    private function configureSender(MailgunTemplatedMessage $message): void
+    {
+        if ($message->hasSender()) {
+            return;
+        }
+
+        $sender = config('mail.from');
+
+        if ( ! $sender) {
+            return;
+        }
+
+        assert(
+            is_string($sender) || is_array($sender),
+            sprintf(
+                'Expected config value mail.from to be ' .
+                'string or array, got %s instead',
+                get_debug_type($sender)
+            )
+        );
+
+        $message->setSender($sender);
     }
 
     /**
