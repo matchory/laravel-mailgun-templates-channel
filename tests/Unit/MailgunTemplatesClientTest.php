@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Matchory\MailgunTemplatedMessages\Tests;
 
 use Illuminate\Events\Dispatcher;
-use JsonException;
 use Mailgun\Api\Message;
 use Mailgun\Mailgun;
 use Mailgun\Model\Message\SendResponse;
@@ -34,7 +33,6 @@ class MailgunTemplatesClientTest extends TestCase
 {
     /**
      * @covers \Matchory\MailgunTemplatedMessages\MailgunTemplatesClient::send
-     * @throws JsonException
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws IncompatibleReturnValueException
@@ -75,7 +73,6 @@ class MailgunTemplatesClientTest extends TestCase
 
     /**
      * @covers \Matchory\MailgunTemplatedMessages\MailgunTemplatesClient::send
-     * @throws JsonException
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws IncompatibleReturnValueException
