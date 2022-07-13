@@ -21,6 +21,7 @@ use Matchory\MailgunTemplatedMessages\MailgunTemplatesClient;
 use Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage;
 
 use function assert;
+use function config;
 use function get_debug_type;
 use function is_array;
 use function is_callable;
@@ -30,7 +31,7 @@ use function is_string;
 use function sprintf;
 
 /**
- * MailgunTemplatesChannel
+ * Mailgun Templates Channel
  *
  * @bundle Matchory\MailgunTemplatedMessages
  */
@@ -53,7 +54,7 @@ class MailgunTemplatesChannel
     public function send(
         mixed $notifiable,
         Notification $notification
-    ): ?SendResponse {
+    ): SendResponse|null {
         assert(
             is_callable([$notification, 'toMailgun']),
             sprintf(
@@ -82,7 +83,46 @@ class MailgunTemplatesChannel
                 return null;
             }
 
-            $message->to($recipient);
+            $message->setRecipient($recipient);
+        }
+
+        if ( ! $message->hasSender()) {
+            $sender = config('mail.from');
+
+            if ($sender) {
+                assert(is_string($sender), sprintf(
+                    'Expected config value mail.from to be ' .
+                    'string, got %s instead',
+                    get_debug_type($sender)
+                ));
+                $message->setSender($sender);
+            }
+        }
+
+        if ( ! $message->hasReplyTo()) {
+            $replyTo = config('mail.reply_to');
+
+            if ($replyTo) {
+                assert(is_string($replyTo), sprintf(
+                    'Expected config value mail.reply_to to be ' .
+                    'string, got %s instead',
+                    get_debug_type($replyTo)
+                ));
+                $message->setReplyTo($replyTo);
+            }
+        }
+
+        if ( ! $message->hasReturnPath()) {
+            $returnPath = config('mail.return_path');
+
+            if ($returnPath) {
+                assert(is_string($returnPath), sprintf(
+                    'Expected config value mail.return_path to be ' .
+                    'string, got %s instead',
+                    get_debug_type($returnPath)
+                ));
+                $message->setReturnPath($returnPath);
+            }
         }
 
         return $this->client->send($message);
