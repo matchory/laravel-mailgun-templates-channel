@@ -58,6 +58,34 @@ trait HeaderTrait
     }
 
     /**
+     * Sets a reply to address header.
+     *
+     * @param string|array $replyTo Reply to address.
+     */
+    public function setReplyTo(string|array $replyTo): void
+    {
+        $target = $this->resolveTarget($replyTo);
+
+        if ($target) {
+            $this->addHeader('reply-to', $target);
+        }
+    }
+
+    /**
+     * Sets a return path address header.
+     *
+     * @param string|array $returnPath Return path address.
+     */
+    public function setReturnPath(string|array $returnPath): void
+    {
+        $target = $this->resolveTarget($returnPath);
+
+        if ($target) {
+            $this->addHeader('return-path', $target);
+        }
+    }
+
+    /**
      * Adds a header to the message.
      *
      * @param string          $name  Name of the header.
@@ -98,11 +126,31 @@ trait HeaderTrait
     }
 
     /**
+     * Checks whether the message has a reply to header set.
+     *
+     * @return bool Whether the message has a reply to header set.
+     */
+    public function hasReplyTo(): bool
+    {
+        return $this->hasHeader('reply-to');
+    }
+
+    /**
+     * Checks whether the message has a return path header set.
+     *
+     * @return bool Whether the message has a return path header set.
+     */
+    public function hasReturnPath(): bool
+    {
+        return $this->hasHeader('return-path');
+    }
+
+    /**
      * Sets a single header.
      *
-     * @param string       $name  Name of the header.
-     * @param string|array $value Value of the header, or multiple values as an
-     *                            array.
+     * @param string          $name  Name of the header.
+     * @param string|string[] $value Value of the header, or multiple values as
+     *                               an array.
      *
      * @return T Instance for chaining.
      * @see self::addHeader()
@@ -145,6 +193,36 @@ trait HeaderTrait
     }
 
     /**
+     * Sets a reply to header.
+     *
+     * @param string|array $replyTo Reply to address.
+     *
+     * @return T Instance for chaining.
+     * @see self::replyTo()
+     */
+    public function replyTo(string|array $replyTo): static
+    {
+        $this->replyTo($replyTo);
+
+        return $this;
+    }
+
+    /**
+     * Sets a return path header.
+     *
+     * @param string|array $returnPath Reply to address.
+     *
+     * @return T Instance for chaining.
+     * @see self::returnPath()
+     */
+    public function returnPath(string|array $returnPath): static
+    {
+        $this->setReturnPath($returnPath);
+
+        return $this;
+    }
+
+    /**
      * Removes a header.
      *
      * @param string $name Name of the header to remove.
@@ -158,6 +236,35 @@ trait HeaderTrait
 
         return $this;
     }
+
+    /**
+     * Resolves a mail target to an addressable format.
+     *
+     * @param string|array|null $target Mail target in any known format.
+     *
+     * @return string|null Address and name, if given. Null if none of both.
+     *
+     * @example resolveTarget('john@example.com'); // 'john@example.com'
+     * @example resolveTarget(
+     *              'john@example.com <John Smith>'
+     *          ); // 'john@example.com <John Smith>'
+     * @example resolveTarget([
+     *              'address' => 'john@example.com',
+     *              'name' => 'John Smith'
+     *          ]); // 'john@example.com <John Smith>'
+     * @example resolveTarget([
+     *              'address' => 'john@example.com'
+     *          ]); // 'john@example.com'
+     * @example resolveTarget([ 'john@example.com' ]); // 'john@example.com'
+     * @example resolveTarget([
+     *              'john@example.com' => 'John Smith'
+     *          ]); // 'john@example.com <John Smith>'
+     * @example resolveTarget(''); // null
+     * @example resolveTarget(null); // null
+     */
+    abstract protected function resolveTarget(
+        string|array|null $target
+    ): string|null;
 
     /**
      * Retrieves the encoded headers.
@@ -175,6 +282,14 @@ trait HeaderTrait
             ->all();
     }
 
+    /**
+     * Normalizes a header name by removing the prefix, if any, and converting
+     * the name to lowercase.
+     *
+     * @param string $name Name of the header.
+     *
+     * @return string Normalized header name.
+     */
     private function normalizeHeaderName(string $name): string
     {
         if (str_starts_with($name, 'h:')) {

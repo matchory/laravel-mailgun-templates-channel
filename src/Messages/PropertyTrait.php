@@ -13,9 +13,6 @@ namespace Matchory\MailgunTemplatedMessages\Messages;
 
 use JetBrains\PhpStorm\Pure;
 
-use function array_key_first;
-use function is_string;
-
 /**
  * @template T of MailgunTemplatedMessage
  * @bundle   Matchory\MailgunTemplatedMessages
@@ -287,8 +284,7 @@ trait PropertyTrait
     /**
      * Resolves a mail target to an addressable format.
      *
-     * @param string|array<string|int, string>|null $target Mail target in any
-     *                                                      known format.
+     * @param string|array|null $target Mail target in any known format.
      *
      * @return string|null Address and name, if given. Null if none of both.
      *
@@ -309,38 +305,8 @@ trait PropertyTrait
      *          ]); // 'john@example.com <John Smith>'
      * @example resolveTarget(''); // null
      * @example resolveTarget(null); // null
-     * @psalm-suppress
      */
-    private function resolveTarget(string|array|null $target): string|null
-    {
-        /**
-         * Psalm doesn't handle match arms correctly currently
-         *
-         * @psalm-suppress PossiblyInvalidArrayOffset
-         * @psalm-suppress PossiblyNullArrayAccess
-         * @psalm-suppress PossiblyInvalidArgument
-         */
-        return match (true) {
-            // 'john@example.com', 'john@example.com <John Smith>'
-            $target && is_string($target) => $target,
-
-            // [ 'address' => 'john@example.com', 'name' => 'John Smith' ]
-            isset(
-                $target['address'],
-                $target['name']
-            ) => "{$target['address']} <{$target['name']}>",
-
-            // [ 'address' => 'john@example.com' ]
-            isset($target['address']) => $target['address'],
-
-            // [ 'john@example.com' ]
-            isset($target[0]) && $target[0] => $target[0],
-
-            // [ 'john@example.com' => 'John Smith' ]
-            is_string($key = array_key_first($target)) => "$key <$target[$key]>",
-
-            // [], '', 42, false
-            default => null
-        };
-    }
+    abstract protected function resolveTarget(
+        string|array|null $target
+    ): string|null;
 }

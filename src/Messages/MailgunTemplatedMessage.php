@@ -15,7 +15,9 @@ use Illuminate\Contracts\Support\Arrayable;
 use JsonException;
 
 use function array_filter;
+use function array_key_first;
 use function array_merge;
+use function is_string;
 
 /**
  * Mailgun Templated Message
@@ -92,5 +94,69 @@ class MailgunTemplatedMessage implements Arrayable
                 'to' => $this->getRecipient(),
             ]
         ));
+    }
+
+    /**
+     * Resolves a mail target to an addressable format.
+     *
+     * @param string|array|null $target Mail target in any known format.
+     *
+     * @return string|null Address and name, if given. Null if none of both.
+     *
+     * @example        resolveTarget('john@example.com'); // 'john@example.com'
+     * @example        resolveTarget(
+     *                     'john@example.com <John Smith>'
+     *                 ); // 'john@example.com <John Smith>'
+     * @example        resolveTarget([
+     *                     'address' => 'john@example.com',
+     *                     'name' => 'John Smith'
+     *                 ]); // 'john@example.com <John Smith>'
+     * @example        resolveTarget([
+     *                     'address' => 'john@example.com'
+     *                 ]); // 'john@example.com'
+     * @example        resolveTarget([
+     *                     'john@example.com'
+     *                 ]); // 'john@example.com'
+     * @example        resolveTarget([
+     *                     'john@example.com' => 'John Smith'
+     *                 ]); // 'john@example.com <John Smith>'
+     * @example        resolveTarget(''); // null
+     * @example        resolveTarget(null); // null
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedInferredReturnType
+     */
+    protected function resolveTarget(string|array|null $target): string|null
+    {
+        /**
+         * Psalm doesn't handle match arms correctly currently
+         *
+         * @psalm-suppress PossiblyInvalidArrayOffset
+         * @psalm-suppress PossiblyNullArrayAccess
+         * @psalm-suppress PossiblyInvalidArgument
+         */
+        return match (true) {
+            // 'john@example.com', 'john@example.com <John Smith>'
+            $target && is_string($target) => $target,
+
+            // [ 'address' => 'john@example.com', 'name' => 'John Smith' ]
+            isset(
+                $target['address'],
+                $target['name']
+            ) => "{$target['address']} <{$target['name']}>",
+
+            // [ 'address' => 'john@example.com' ]
+            isset($target['address']) => $target['address'],
+
+            // [ 'john@example.com' ]
+            isset($target[0]) && $target[0] => $target[0],
+
+            // [ 'john@example.com' => 'John Smith' ]
+            is_string($key = array_key_first(
+                $target
+            )) => "$key <$target[$key]>",
+
+            // [], '', 42, false
+            default => null
+        };
     }
 }
