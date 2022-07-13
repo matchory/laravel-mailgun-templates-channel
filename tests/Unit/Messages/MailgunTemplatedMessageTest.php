@@ -30,6 +30,26 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::getHeaders
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::header
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::addHeader
+     */
+    public function testAppendsHeaders(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+
+        self::assertEmpty($message->getHeaders());
+        $message->header('foo', 'bar');
+        self::assertEquals(['bar'], $message->getHeaders()['foo']);
+        $message->addHeader('foo', 'baz');
+        self::assertEquals(['bar', 'baz'], $message->getHeaders()['foo']);
+        $message->addHeader('foo', 'quz', true);
+        self::assertEquals(['quz'], $message->getHeaders()['foo']);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::subject
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::setBlindCarbonCopy
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::getBlindCarbonCopy
@@ -524,6 +544,103 @@ class MailgunTemplatedMessageTest extends TestCase
         self::assertTrue($message->hasRecipient());
         $message->setRecipient('bar');
         self::assertSame('bar', $message->getRecipient());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws \PHPUnit\Framework\Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasHeader
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::addHeader
+     */
+    public function testRemovesPrefixFromHeaders(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        $message->addHeader('h:foo', 'bar');
+        self::assertTrue($message->hasHeader('foo'));
+        self::assertArrayHasKey('h:foo', $message->toArray());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws \PHPUnit\Framework\Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasOption
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::addOption
+     */
+    public function testRemovesPrefixFromOptions(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        $message->addOption('o:foo', 'bar');
+        self::assertTrue($message->hasOption('foo'));
+        self::assertFalse($message->hasOption('o:foo'));
+        self::assertArrayHasKey('o:foo', $message->toArray());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @throws \PHPUnit\Framework\Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasParam
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::addParam
+     */
+    public function testRemovesPrefixFromParams(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        $message->addParam('v:foo', 'bar');
+        self::assertTrue($message->hasParam('foo'));
+        self::assertFalse($message->hasParam('v:foo'));
+        self::assertArrayHasKey('v:foo', $message->toArray());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::replyTo
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::setReplyTo
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasReplyTo
+     */
+    public function testReplyToSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+
+        self::assertFalse($message->hasReplyTo());
+        self::assertFalse($message->hasHeader('return-path'));
+        self::assertNull($message->getHeaders()['return-path'] ?? null);
+        $message->setReplyTo('foo');
+        self::assertEquals(['foo'], $message->getHeaders()['reply-to']);
+        self::assertTrue($message->hasReplyTo());
+        $message->replyTo('bar');
+        self::assertEquals(['bar'], $message->getHeaders()['reply-to']);
+        self::assertTrue($message->hasReplyTo());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::returnPath
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::setReturnPath
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasReturnPath
+     */
+    public function testReturnPathSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+
+        self::assertFalse($message->hasReturnPath());
+        self::assertFalse($message->hasHeader('return-path'));
+        self::assertNull($message->getHeaders()['return-path'] ?? null);
+        $message->setReturnPath('foo');
+        self::assertEquals(['foo'], $message->getHeaders()['return-path']);
+        self::assertTrue($message->hasReturnPath());
+        $message->returnPath('bar');
+        self::assertEquals(['bar'], $message->getHeaders()['return-path']);
+        self::assertTrue($message->hasReturnPath());
     }
 
     /**

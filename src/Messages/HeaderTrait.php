@@ -67,7 +67,7 @@ trait HeaderTrait
         $target = $this->resolveTarget($replyTo);
 
         if ($target) {
-            $this->addHeader('reply-to', $target);
+            $this->addHeader('reply-to', $target, true);
         }
     }
 
@@ -81,24 +81,29 @@ trait HeaderTrait
         $target = $this->resolveTarget($returnPath);
 
         if ($target) {
-            $this->addHeader('return-path', $target);
+            $this->addHeader('return-path', $target, true);
         }
     }
 
     /**
      * Adds a header to the message.
      *
-     * @param string          $name  Name of the header.
-     * @param string|string[] $value Value of the header, or multiple values as
-     *                               an array.
+     * @param string          $name    Name of the header.
+     * @param string|string[] $value   Value of the header, or multiple values
+     *                                 as an array.
+     * @param bool            $replace Whether any existing header value should
+     *                                 be replaced with the new value.
      *
      * @psalm-suppress MixedPropertyTypeCoercion
      */
-    public function addHeader(string $name, string|array $value): void
-    {
+    public function addHeader(
+        string $name,
+        string|array $value,
+        bool $replace = false
+    ): void {
         $name = $this->normalizeHeaderName($name);
 
-        if ( ! $this->hasHeader($name)) {
+        if ($replace || ! $this->hasHeader($name)) {
             $this->headers[$name] = [];
         }
 
@@ -148,16 +153,21 @@ trait HeaderTrait
     /**
      * Sets a single header.
      *
-     * @param string          $name  Name of the header.
-     * @param string|string[] $value Value of the header, or multiple values as
-     *                               an array.
+     * @param string          $name    Name of the header.
+     * @param string|string[] $value   Value of the header, or multiple values
+     *                                 as an array.
+     * @param bool            $replace Whether any existing header value should
+     *                                 be replaced with the new value.
      *
      * @return T Instance for chaining.
      * @see self::addHeader()
      */
-    public function header(string $name, string|array $value): static
-    {
-        $this->addHeader($name, $value);
+    public function header(
+        string $name,
+        string|array $value,
+        bool $replace = false
+    ): static {
+        $this->addHeader($name, $value, $replace);
 
         return $this;
     }
@@ -198,11 +208,11 @@ trait HeaderTrait
      * @param string|array $replyTo Reply to address.
      *
      * @return T Instance for chaining.
-     * @see self::replyTo()
+     * @see self::setReplyTo()
      */
     public function replyTo(string|array $replyTo): static
     {
-        $this->replyTo($replyTo);
+        $this->setReplyTo($replyTo);
 
         return $this;
     }
@@ -213,7 +223,7 @@ trait HeaderTrait
      * @param string|array $returnPath Reply to address.
      *
      * @return T Instance for chaining.
-     * @see self::returnPath()
+     * @see self::setReturnPath()
      */
     public function returnPath(string|array $returnPath): static
     {
