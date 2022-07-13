@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Matchory\MailgunTemplatedMessages\Messages;
 
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use Exception;
@@ -24,7 +25,8 @@ use function json_encode;
 use const JSON_THROW_ON_ERROR;
 
 /**
- * @bundle Matchory\MailgunTemplatedMessages
+ * @template T of MailgunTemplatedMessage
+ * @bundle   Matchory\MailgunTemplatedMessages
  */
 trait MailgunFeatureTrait
 {
@@ -50,7 +52,7 @@ trait MailgunFeatureTrait
      *
      * @param string $templateName Name of the template.
      */
-    protected function setTemplateName(string $templateName): void
+    final protected function setTemplateName(string $templateName): void
     {
         $this->templateName = $templateName;
     }
@@ -82,7 +84,7 @@ trait MailgunFeatureTrait
      *                                           deliver the message.
      * @param DateTimeZone|string|null $timezone Timezone to create the date in.
      *
-     * @return static Instance for chaining.
+     * @return T Instance for chaining.
      * @throws Exception If date construction fails.
      */
     public function deliverAt(
@@ -91,7 +93,10 @@ trait MailgunFeatureTrait
     ): static {
         $timezoneInstance = $this->inferTimezone($timezone);
 
-        if ($dateTime instanceof DateTimeInterface) {
+        if (
+            $dateTime instanceof DateTime ||
+            $dateTime instanceof DateTimeImmutable
+        ) {
             $dateTime = $dateTime->setTimeZone($timezoneInstance);
             $dateTimeInstance = $dateTime;
         } else {
@@ -113,7 +118,7 @@ trait MailgunFeatureTrait
      *
      * @param string $version Template version to use.
      *
-     * @return static Instance for chaining.
+     * @return T Instance for chaining.
      */
     public function version(string $version): static
     {
@@ -125,7 +130,7 @@ trait MailgunFeatureTrait
     /**
      * Retrieves the encoded options.
      *
-     * @return array<string, scalar> Encoded options.
+     * @return array<string, scalar|null> Encoded options.
      * @throws JsonException If value encoding fails.
      */
     private function getEncodedOptions(): array

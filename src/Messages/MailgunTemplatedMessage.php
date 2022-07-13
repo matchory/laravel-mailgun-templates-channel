@@ -24,6 +24,7 @@ use function array_merge;
  * existing message template with a given set of parameters.
  *
  * @use FluentTrait<MailgunTemplatedMessage>
+ * @use MailgunFeatureTrait<MailgunTemplatedMessage>
  * @use MessageBuildingTrait<MailgunTemplatedMessage>
  * @bundle Matchory\MailgunTemplatedMessages
  */
