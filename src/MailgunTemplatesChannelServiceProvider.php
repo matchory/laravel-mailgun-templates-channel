@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Matchory\MailgunTemplatedMessages;
 
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Notifications\ChannelManager;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\ServiceProvider;
@@ -85,7 +85,7 @@ class MailgunTemplatesChannelServiceProvider extends ServiceProvider
             Container $app
         ): Mailgun {
             $repository = $app->get('config');
-            assert($repository instanceof Repository);
+            assert($repository instanceof ConfigRepository);
             $config = $repository->get('services.mailgun', []);
             assert(is_array($config));
             $secret = $config['secret'] ?? null;
