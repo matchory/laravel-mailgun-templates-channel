@@ -340,6 +340,23 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
+     * @throws Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::dkim
+     */
+    public function testDkimSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        self::assertFalse($message->hasOption('dkim'));
+        $message->dkim();
+        self::assertTrue($message->hasOption('dkim'));
+        self::assertSame('yes', $message->getOptions()['dkim']);
+        $message->dkim(false);
+        self::assertSame('no', $message->getOptions()['dkim']);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::subject
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::setDomain
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::getDomain
@@ -609,6 +626,23 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
+     * @throws Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::requireTls
+     */
+    public function testRequireTlsSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        self::assertFalse($message->hasOption('require-tls'));
+        $message->requireTls();
+        self::assertTrue($message->hasOption('require-tls'));
+        self::assertTrue($message->getOptions()['require-tls']);
+        $message->requireTls(false);
+        self::assertFalse($message->getOptions()['require-tls']);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::returnPath
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::setReturnPath
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasReturnPath
@@ -679,6 +713,23 @@ class MailgunTemplatedMessageTest extends TestCase
     /**
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
+     * @throws Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::skipVerification
+     */
+    public function testSkipVerificationSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        self::assertFalse($message->hasOption('skip-verification'));
+        $message->skipVerification();
+        self::assertTrue($message->hasOption('skip-verification'));
+        self::assertTrue($message->getOptions()['skip-verification']);
+        $message->skipVerification(false);
+        self::assertFalse($message->getOptions()['skip-verification']);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::subject
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::setSubject
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::getSubject
@@ -691,6 +742,91 @@ class MailgunTemplatedMessageTest extends TestCase
         self::assertSame('foo', $message->getSubject());
         $message->setSubject('bar');
         self::assertSame('bar', $message->getSubject());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::tag
+     */
+    public function testTagSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        self::assertFalse($message->hasOption('tag'));
+        $message->tag('foo');
+        self::assertTrue($message->hasOption('tag'));
+        self::assertSame('foo', $message->getOptions()['tag']);
+        $message->tag(['foo', 'bar', 'baz']);
+        self::assertEquals(['foo', 'bar', 'baz'], $message->getOptions()['tag']);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::testMode
+     */
+    public function testTestModeSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        self::assertFalse($message->hasOption('testmode'));
+        $message->testMode();
+        self::assertTrue($message->hasOption('testmode'));
+        self::assertSame('yes', $message->getOptions()['testmode']);
+        $message->testMode(false);
+        self::assertSame('no', $message->getOptions()['testmode']);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::trackingClicks
+     */
+    public function testTrackingClicksSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        self::assertFalse($message->hasOption('tracking-clicks'));
+        $message->trackingClicks();
+        self::assertTrue($message->hasOption('tracking-clicks'));
+        self::assertTrue($message->getOptions()['tracking-clicks']);
+        $message->trackingClicks(false);
+        self::assertFalse($message->getOptions()['tracking-clicks']);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::trackingOpens
+     */
+    public function testTrackingOpensSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        self::assertFalse($message->hasOption('tracking-opens'));
+        $message->trackingOpens();
+        self::assertTrue($message->hasOption('tracking-opens'));
+        self::assertTrue($message->getOptions()['tracking-opens']);
+        $message->trackingOpens(false);
+        self::assertFalse($message->getOptions()['tracking-opens']);
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::tracking
+     */
+    public function testTrackingSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        self::assertFalse($message->hasOption('tracking'));
+        $message->tracking();
+        self::assertTrue($message->hasOption('tracking'));
+        self::assertTrue($message->getOptions()['tracking']);
+        $message->tracking(false);
+        self::assertFalse($message->getOptions()['tracking']);
     }
 
     /**
