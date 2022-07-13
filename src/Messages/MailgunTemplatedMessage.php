@@ -32,6 +32,7 @@ use function array_merge;
  */
 class MailgunTemplatedMessage implements Arrayable
 {
+    use HeaderTrait;
     use OptionTrait;
     use ParamTrait;
     use PropertyTrait;
@@ -79,6 +80,7 @@ class MailgunTemplatedMessage implements Arrayable
     {
         return array_filter(array_merge(
             $this->getEncodedOptions(),
+            $this->getEncodedHeaders(),
             $this->getEncodedParams(),
             [
                 'bcc' => $this->getBlindCarbonCopy(),

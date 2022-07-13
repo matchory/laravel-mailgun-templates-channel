@@ -116,6 +116,25 @@ class MailgunTemplatedMessageTest extends TestCase
      * @throws JsonException
      * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
      */
+    public function testConvertsMessageToArrayIncludingEncodedHeaders(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+        $message->header('bar', 'foo')
+                ->header('baz', ['a', 'b', 'c']);
+
+        self::assertEquals([
+            'template' => 'foo',
+            'h:bar' => ['foo'],
+            'h:baz' => ['a', 'b', 'c'],
+        ], $message->toArray());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::toArray
+     */
     public function testConvertsMessageToArrayIncludingEncodedParam(): void
     {
         $message = new MailgunTemplatedMessage('foo');
@@ -337,6 +356,56 @@ class MailgunTemplatedMessageTest extends TestCase
     {
         $message = MailgunTemplatedMessage::for('foo');
         self::assertSame('foo', $message->getTemplateName());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::getHeaders
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::addHeader
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasHeader
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::removeHeader
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::withoutHeader
+     */
+    public function testHeaderRemoval(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+
+        self::assertEmpty($message->getHeaders());
+        $message->addHeader('foo', 'bar');
+        $message->addHeader('baz', 'quz');
+        self::assertNotEmpty($message->getHeaders());
+        self::assertSame('bar', $message->getHeaders()['foo'][0]);
+        self::assertSame('quz', $message->getHeaders()['baz'][0]);
+        $message->withoutHeader('foo');
+        self::assertNull($message->getHeaders()['foo'] ?? null);
+        self::assertFalse($message->hasHeader('foo'));
+        $message->removeHeader('baz');
+        self::assertNull($message->getHeaders()['baz'] ?? null);
+        self::assertFalse($message->hasHeader('baz'));
+        self::assertEmpty($message->getHeaders());
+    }
+
+    /**
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::getHeaders
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::header
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::addHeader
+     * @covers \Matchory\MailgunTemplatedMessages\Messages\MailgunTemplatedMessage::hasHeader
+     */
+    public function testHeaderSetting(): void
+    {
+        $message = new MailgunTemplatedMessage('foo');
+
+        self::assertEmpty($message->getHeaders());
+        $message->header('foo', 'bar');
+        $message->addHeader('baz', ['a', 'b', 'c']);
+        self::assertNotEmpty($message->getHeaders());
+        self::assertSame('bar', $message->getHeaders()['foo'][0]);
+        self::assertEquals(['a', 'b', 'c'], $message->getHeaders()['baz']);
+        self::assertTrue($message->hasHeader('foo'));
+        self::assertTrue($message->hasHeader('baz'));
     }
 
     /**
